@@ -16,18 +16,22 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
-
         password2 = request.form['password2']
+
 
         db = get_db()
         error = None
 
         if not username:
             error = 'El Nombre de Usuario es requiredo.'
+
+        elif not email:
+            error = 'El Email es requiredo.'
+        
         elif not password:
             error = 'La Contraseña es requiredo.'
-
         elif not password2:
             error = 'Verificar la Contraseña es requiredo.'
         elif not password == password2:
