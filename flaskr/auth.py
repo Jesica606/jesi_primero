@@ -17,13 +17,23 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        password2 = request.form['password2']
+
         db = get_db()
         error = None
 
         if not username:
-            error = 'Username is required.'
+            error = 'El Nombre de Usuario es requiredo.'
         elif not password:
-            error = 'Password is required.'
+            error = 'La Contraseña es requiredo.'
+
+        elif not password2:
+            error = 'Verificar la Contraseña es requiredo.'
+        elif not password == password2:
+            error = 'Error de Verificacion.'
+
+
 
         if error is None:
             try:
@@ -33,7 +43,7 @@ def register():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"El Nombre de Usuario {username} ya esta registrado."
             else:
                 return redirect(url_for("auth.login"))
 
@@ -56,9 +66,9 @@ def login():
         ).fetchone()
 
         if user is None:
-            error = 'Incorrect username.'
+            error = 'Nombre de Usuario Incorrecto.'
         elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = 'Contraseña Incorrecto.'
 
         if error is None:
             session.clear()
