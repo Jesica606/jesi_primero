@@ -114,3 +114,26 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@bp.route('/email', methods=('GET', 'POST'))
+@login_required
+def cambiaremail():
+   if request.method == 'POST':
+       email2 = request.form['email2']
+       error = None
+
+       if not email2:
+           error = 'Email requerido.'
+       if error is not None:
+           flash(error)
+       else:
+           db = get_db()
+           db.execute(
+               'UPDATE user SET email = ?'
+               ' WHERE id = ?',
+               (email2, g.user["id"])
+           )
+           db.commit()
+           return redirect(url_for('blog.index'))
+   return render_template('auth/email.html')
